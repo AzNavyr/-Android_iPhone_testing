@@ -2,12 +2,10 @@ package ru.netology.testing.uiautomator
 
 import android.content.Context
 import androidx.test.core.app.ApplicationProvider
+import androidx.test.ext.junit.rules.activityScenarioRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
-import androidx.test.uiautomator.By
-import androidx.test.uiautomator.UiDevice
-import androidx.test.uiautomator.UiSelector
-import androidx.test.uiautomator.Until
+import androidx.test.uiautomator.*
 import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Test
@@ -24,6 +22,7 @@ class ChangeTextTest {
 
     private lateinit var device: UiDevice
     private val textToSet = "Netology"
+    private val standartText = "Hello UiAutomator!"
 
 //    @Test
 //    fun testInternetSettings() {
@@ -110,6 +109,31 @@ class ChangeTextTest {
         assertEquals(result, textToSet)
     }
 
+    @Test
+    fun testEmptyInput() {
+        val packageName = MODEL_PACKAGE
+        waitForPackage(packageName)
+
+        device.findObject(By.res(packageName, "userInput")).text = ""
+        device.findObject(By.res(packageName, "buttonChange")).click()
+
+        val result = device.findObject(By.res(packageName, "textToBeChanged")).text
+        assertEquals(result, standartText)
+    }
+
+    @Test
+    fun testNewActivityTest() {
+        val packageName = MODEL_PACKAGE
+        waitForPackage(packageName)
+
+        device.findObject(By.res(packageName, "userInput")).text = textToSet
+        device.findObject(By.res(packageName, "buttonActivity")).click()
+
+        device.wait(Until.hasObject(By.pkg(MODEL_PACKAGE)), TIMEOUT)
+
+        val result = device.findObject(By.res(packageName, "text")).text
+        assertEquals(result, textToSet)
+    }
 }
 
 
